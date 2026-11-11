@@ -1,0 +1,9 @@
+logging:
+  level:
+    com.example.notifyengine: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

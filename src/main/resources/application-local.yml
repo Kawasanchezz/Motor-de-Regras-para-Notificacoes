@@ -1,0 +1,17 @@
+# Perfil para rodar SEM Redis e SEM Docker (só precisa do PostgreSQL).
+# Cache, idempotência, contadores e fila agendada ficam em memória: use apenas com UMA instância.
+notify:
+  store: memory
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  health:
+    redis:
+      enabled: false
+
+logging:
+  level:
+    com.example.notifyengine: DEBUG

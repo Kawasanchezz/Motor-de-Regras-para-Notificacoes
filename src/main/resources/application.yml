@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: notify-engine
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/notify}
+    username: ${DB_USER:notify}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+    web:
+      pageable:
+        # Evita consultas gigantes (?size=100000)
+        max-page-size: 100
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Seguro por padrão; métricas/prometheus são liberadas só nos perfis dev e local
+        include: health,info
+
+notify:
+  # redis (padrão) ou memory (somente desenvolvimento local, uma instância)
+  store: redis
+  http:
+    # Limite de tamanho do corpo das requisições (bytes)
+    max-body-bytes: 262144
+  engine:
+    # true: a primeira regra que resulta em SEND/DEFER encerra o processamento
+    stop-on-first-match: true
+  dispatch:
+    max-attempts: 3
+    initial-backoff-ms: 200
+    multiplier: 2.0
+  scheduler:
+    poll-interval-ms: 5000
+    batch-size: 50
+  idempotency:
+    ttl: 24h
+  rules-cache:
+    ttl: 10m

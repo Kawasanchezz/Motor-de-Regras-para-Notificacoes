@@ -1,0 +1,252 @@
+# ======================================================================
+# .gitignore: Java / Spring Boot / Maven / Docker
+# Regra de ouro: só código, configuração sem segredos e documentação sobem
+# para o Git. Segredos, build, dados locais e arquivos de IA ficam de fora.
+# ======================================================================
+
+# --- Build e saída do Maven ---
+target/
+*.class
+*.jar
+*.war
+!.mvn/wrapper/maven-wrapper.jar
+dependency-reduced-pom.xml
+.flattened-pom.xml
+.mvn/timing.properties
+HELP.md
+
+# --- Segredos e ambiente (NUNCA entram no Git) ---
+# Só o exemplo, sem valores reais, é versionado.
+.env
+.env.*
+!.env.example
+.envrc
+*.local
+secrets/
+credentials/
+private/
+*.secret
+*.secrets
+*.secrets.json
+*.secrets.yaml
+*.secrets.yml
+secrets.json
+credentials.json
+*-credentials.json
+service-account*.json
+client_secret*.json
+# Chaves, certificados e keystores
+*.pem
+*.key
+*.p12
+*.pfx
+*.pkcs12
+*.p8
+*.crt
+*.cer
+*.der
+*.csr
+*.jks
+*.keystore
+*.asc
+*.gpg
+.gnupg/
+.ssh/
+id_rsa
+id_rsa.pub
+id_dsa
+id_dsa.pub
+id_ed25519
+id_ed25519.pub
+id_ecdsa
+id_ecdsa.pub
+known_hosts
+.git-credentials
+.netrc
+.pgpass
+.htpasswd
+# Cofres de senha
+*.kdbx
+
+# --- Claude, Anthropic e outras ferramentas de IA (pastas, memória, sessões e chats) ---
+.claude/
+.claude.json
+.claude.json.*
+.claude-code/
+.claude-cache/
+.claudeignore
+.claude-session*
+.anthropic/
+CLAUDE.md
+CLAUDE.local.md
+claude.local.md
+AGENTS.local.md
+GEMINI.local.md
+claude-session*
+claude-chat*
+claude_chat*
+chat-export*
+chat_export*
+chat-history*
+conversation-export*
+transcript-*.md
+transcript-*.json
+transcript-*.jsonl
+.mcp.json
+.mcp.*.json
+mcp.local.json
+mcp-servers.local.json
+.cursor/
+.cursorignore
+.cursorindexingignore
+.cursorrules
+.windsurf/
+.windsurfrules
+.aider*
+.continue/
+.codeium/
+.tabnine/
+.codex/
+.gemini/
+.copilot/
+.specstory/
+.cline/
+.clinerules
+.roo/
+.roomodes
+.kiro/
+.junie/
+.zed/
+.trae/
+.agent/
+.agents/
+.superpowers/
+.ai/
+
+# --- Bancos locais, dumps e dados ---
+# ATENÇÃO: "*.sql" ignora dumps, mas as migrações do Flyway DEVEM ser versionadas
+# (exceção logo abaixo). Sem elas o projeto não sobe a partir de um clone limpo.
+*.sql
+!src/main/resources/db/migration/
+!src/main/resources/db/migration/*.sql
+*.sql.gz
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.bak
+*.backup
+*.dump
+*.pgdump
+dump.rdb
+*.rdb
+dump/
+dumps/
+backup/
+backups/
+pgdata/
+postgres-data/
+
+# --- Docker local ---
+docker-compose.override.yml
+.docker/
+
+# --- Relatórios de scanners, dumps de memória e falhas ---
+gitleaks-report*
+trufflehog*.json
+semgrep-report*
+*.sarif
+audit-report*
+security-report*
+*.hprof
+heapdump*
+hs_err_pid*
+*.core
+core.[0-9]*
+*.dmp
+*.mdmp
+*.stackdump
+*.pcap
+*.pcapng
+
+# --- Testes de API que guardam tokens ---
+*.har
+*.postman_environment.json
+
+# --- Logs ---
+*.log
+*.log.gz
+logs/
+
+# --- Cobertura e caches ---
+coverage/
+.coverage
+htmlcov/
+.cache/
+.sts4-cache/
+.apt_generated/
+.factorypath
+.springBeans
+
+# --- Editores / IDEs ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.metadata/
+.history/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# --- Sistema operacional ---
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# --- Temporários, backups e arquivos compactados soltos ---
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
+*.orig
+*.rej
+*.old
+*.save
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.iso
+
+# --- Mídia pessoal e capturas de tela (podem expor dados pessoais) ---
+Screenshot*.png
+Screen Shot*.png
+Screen Recording*
+Captura de tela*
+Captura de Tela*
+Gravando*
+Gravação*
+*.mp4
+*.mov
+*.mkv
+*.webm

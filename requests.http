@@ -1,0 +1,91 @@
+### Coleção de exemplos (extensão "REST Client" do VS Code ou HTTP Client do IntelliJ)
+@host = http://localhost:8080
+
+### Lista as regras de exemplo
+GET {{host}}/rules?eventType=PEDIDO_CRIADO
+
+### Cria uma regra: pedidos acima de R$ 500 de clientes do Brasil, com cooldown de 10 min
+POST {{host}}/rules
+Content-Type: application/json
+
+{
+  "name": "Pedido grande - alerta VIP",
+  "description": "Avisa por push quando um pedido grande é criado",
+  "eventType": "PEDIDO_CRIADO",
+  "priority": 1,
+  "active": true,
+  "condition": {
+    "type": "AND",
+    "children": [
+      { "type": "LEAF", "field": "order.total", "op": "GTE", "value": 500 },
+      { "type": "LEAF", "field": "user.country", "op": "EQ", "value": "BR" }
+    ]
+  },
+  "actions": [
+    { "channel": "PUSH", "template": "Seu pedido {{order.id}} de R$ {{order.total}} foi recebido!", "recipient": "user.deviceToken" }
+  ],
+  "constraints": [
+    { "type": "COOLDOWN", "params": { "seconds": 600 } },
+    { "type": "TIME_WINDOW", "params": { "start": "08:00", "end": "22:00", "zone": "America/Sao_Paulo" } }
+  ]
+}
+
+### Envia um evento (regra de exemplo: e-mail de confirmação)
+POST {{host}}/events
+Content-Type: application/json
+
+{
+  "eventId": "evt-1001",
+  "eventType": "PEDIDO_CRIADO",
+  "userId": "user-42",
+  "payload": { "order": { "id": "A-1001", "total": 650 } },
+  "userAttributes": { "name": "Ana", "email": "ana@example.com", "country": "BR", "deviceToken": "tok-123" }
+}
+
+### Reenvia o mesmo evento (idempotência: replayed = true)
+POST {{host}}/events
+Content-Type: application/json
+
+{
+  "eventId": "evt-1001",
+  "eventType": "PEDIDO_CRIADO",
+  "userId": "user-42",
+  "payload": { "order": { "id": "A-1001", "total": 650 } },
+  "userAttributes": { "name": "Ana", "email": "ana@example.com", "country": "BR", "deviceToken": "tok-123" }
+}
+
+### Pagamento falhou (SMS + push, cooldown de 5 min)
+POST {{host}}/events
+Content-Type: application/json
+
+{
+  "eventId": "evt-2001",
+  "eventType": "PAGAMENTO_FALHOU",
+  "userId": "user-42",
+  "payload": { "order": { "id": "A-1001" }, "payment": { "attempts": 2, "method": "PIX" } },
+  "userAttributes": { "phone": "+5511999990000", "deviceToken": "tok-123" }
+}
+
+### Opt-out de e-mail para todos os eventos
+PUT {{host}}/users/user-42/preferences
+Content-Type: application/json
+
+{ "preferences": [ { "channel": "EMAIL", "optedOut": true } ] }
+
+### Lista preferências
+GET {{host}}/users/user-42/preferences
+
+### Histórico de decisões com filtros
+GET {{host}}/decisions?userId=user-42&decision=SEND&page=0&size=10
+
+### Desativa uma regra (troque o id)
+PATCH {{host}}/rules/11111111-1111-1111-1111-111111111111/status
+Content-Type: application/json
+
+{ "active": false }
+
+### Saúde e métricas
+GET {{host}}/actuator/health
+
+###
+GET {{host}}/actuator/metrics/notify.decisions

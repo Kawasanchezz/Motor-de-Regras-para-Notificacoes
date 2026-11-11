@@ -1,0 +1,159 @@
+# ======================================================================
+# .dockerignore: Java / Maven
+# Objetivo: build rápido (contexto pequeno) e NENHUM segredo dentro da imagem.
+# Tudo que está aqui não é enviado ao Docker daemon nem pode ser copiado
+# por um COPY . . acidental.
+# ======================================================================
+
+# --- Controle de versão ---
+.git/
+.gitignore
+.gitattributes
+.github/
+.gitlab/
+
+# --- Artefatos de build (o build é refeito dentro da imagem) ---
+target/
+**/target/
+*.class
+hs_err_pid*
+*.hprof
+heapdump*
+
+# --- Segredos e ambiente (NUNCA entram na imagem) ---
+# Passe segredos em runtime (variáveis de ambiente, Docker/Kubernetes secrets
+# ou BuildKit --mount=type=secret), nunca com COPY.
+.env
+.env.*
+!.env.example
+.envrc
+secrets/
+credentials/
+private/
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+*.asc
+*.gpg
+.ssh/
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+.netrc
+.git-credentials
+secrets.json
+credentials.json
+service-account*.json
+*.secrets.toml
+*.secrets.yaml
+*.secrets.yml
+
+# --- Claude / IA: pastas, memória, sessões e chats ---
+.claude/
+.claude.json
+.claude-code/
+.anthropic/
+CLAUDE.md
+CLAUDE.local.md
+.claudeignore
+claude-session*
+chat-export*
+chat-history*
+transcript-*
+.mcp.json
+.mcp.*.json
+.cursor/
+.cursorrules
+.windsurf/
+.aider*
+.continue/
+.codex/
+.gemini/
+.copilot/
+.specstory/
+.cline/
+.roo/
+.kiro/
+.junie/
+.agent/
+.agents/
+AGENTS.local.md
+
+# --- Documentação (não é necessária para compilar/rodar) ---
+*.md
+docs/
+LICENSE*
+
+# --- Arquivos do próprio Docker (o Docker lê direto, não precisa estar no contexto) ---
+Dockerfile*
+docker-compose*.yml
+docker-compose*.yaml
+compose*.yml
+compose*.yaml
+.dockerignore
+
+# --- Editores / IDEs ---
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+*~
+.history/
+
+# --- Bancos locais, dumps e dados ---
+*.db
+*.db-journal
+*.dump
+*.bak
+*.sql.gz
+
+# --- Logs, crash dumps e relatórios ---
+*.log
+logs/
+*.core
+core.[0-9]*
+*.dmp
+*.stackdump
+gitleaks-report*
+semgrep-report*
+audit-report*
+*.sarif
+
+# --- CI e configuração de desenvolvimento (não vão para a imagem final) ---
+.pre-commit-config.yaml
+.editorconfig
+requests.http
+
+# --- Sistema operacional ---
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# --- Temporários e compactados soltos ---
+tmp/
+temp/
+*.tmp
+*.temp
+*.orig
+*.rej
+*.old
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar

@@ -1,0 +1,11 @@
+logging:
+  structured:
+    format:
+      console: logstash
+  level:
+    root: INFO
+    com.example.notifyengine: INFO
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}

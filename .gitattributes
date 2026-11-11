@@ -1,0 +1,11 @@
+# Normaliza finais de linha: LF no repositório e no checkout (evita avisos de CRLF e
+# quebra de scripts dentro de containers Linux).
+* text=auto eol=lf
+
+# Binários: não converter
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary

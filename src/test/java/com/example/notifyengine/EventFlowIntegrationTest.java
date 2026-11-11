@@ -36,16 +36,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 class EventFlowIntegrationTest {
 
-    @SuppressWarnings("resource") // ciclo de vida gerenciado pelo @Container (Testcontainers)
+    // O ciclo de vida dos containers é gerenciado pelo @Container (Testcontainers).
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
 
-    @SuppressWarnings("resource") // ciclo de vida gerenciado pelo @Container (Testcontainers)
     @Container
     @ServiceConnection(name = "redis")
-    static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
-            .withExposedPorts(6379);
+    static GenericContainer<?> redis = redisContainer();
+
+    private static GenericContainer<?> redisContainer() {
+        GenericContainer<?> container = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"));
+        container.addExposedPort(6379);
+        return container;
+    }
 
     @Autowired
     MockMvc mvc;

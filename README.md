@@ -3,7 +3,7 @@
 Serviço backend que decide **se, quando, por qual canal e para quem** enviar uma notificação, com base em
 regras configuráveis em tempo de execução (sem deploy).
 
-**Stack:** Java 21 · Spring Boot 3.4 · PostgreSQL 16 · Redis 7 · Flyway · Docker · Testcontainers
+**Stack:** Java 21 · Spring Boot 3.5 · PostgreSQL 16 · Redis 7 · Flyway · Docker · Testcontainers
 
 ## Como rodar
 

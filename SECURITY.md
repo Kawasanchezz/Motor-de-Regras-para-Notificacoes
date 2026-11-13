@@ -36,10 +36,14 @@ avaliação e plano de correção em até 30 dias, e crédito ao relator se dese
 7. **Dados de exemplo** (migração `V2__sample_data.sql`) são criados em qualquer ambiente, inclusive produção.
    Remova-a ou mova para um perfil de desenvolvimento antes de um deploy real.
 8. **Perfil `local`** (`notify.store=memory`) guarda tudo em memória: use apenas com uma instância e só para desenvolvimento.
-9. **Análise de vulnerabilidades das dependências não roda no build padrão.** O perfil `security` (`mvn -Psecurity verify`)
-   gera o SBOM e executa o OWASP Dependency-Check (falha com CVSS >= 7), mas exige a chave gratuita `NVD_API_KEY`
-   e não foi executado nesta auditoria. Use também o Dependabot e o *code scanning* do GitHub.
-10. O `postgres` e o `redis` do Compose não têm sistema de arquivos somente leitura nem `cap_drop` (as imagens oficiais
+9. **Duas CVEs críticas do Spring Framework 6.2.19 sem correção na linha 6.x:** CVE-2026-47884 (exige `XsltView` com
+   mapeamento `/**`) e CVE-2026-47890 (exige Server-Sent Events com fragmentos de view). **Não são exploráveis aqui**:
+   o projeto é uma API REST/JSON, sem views, templates nem SSE. A correção só existe no Spring 7 (Spring Boot 4,
+   mudança de versão maior); migrar é o próximo passo planejado.
+10. **A análise de vulnerabilidades do OWASP Dependency-Check não roda no build padrão** (perfil `security`, exige a chave
+    `NVD_API_KEY` e não foi executado). A varredura da imagem foi feita com Trivy (ver abaixo) e deve ser repetida a
+    cada atualização de dependências; use também o Dependabot e o *code scanning* do GitHub.
+11. O `postgres` e o `redis` do Compose não têm sistema de arquivos somente leitura nem `cap_drop` (as imagens oficiais
     precisam de privilégios no primeiro start); só o contêiner da aplicação é totalmente restrito.
 
 ## Controles implementados
@@ -58,7 +62,13 @@ avaliação e plano de correção em até 30 dias, e crédito ao relator se dese
   reprodutível (`project.build.outputTimestamp` do parent). Perfil `security` com SBOM CycloneDX e Dependency-Check.
 - Segredos só por variáveis de ambiente (`.env` fora do Git); `.env.example` contém apenas marcadores.
 - Actuator limitado a `health,info` por padrão (métricas/Prometheus só nos perfis `dev` e `local`).
-- Dependabot configurado para Maven e Docker; hook opcional de detecção de segredos (`.pre-commit-config.yaml`).
+- **Dependências:** Spring Boot 3.5.x com Tomcat, Jackson, Netty, PostgreSQL JDBC, Log4j e commons-lang3 fixados em
+  versões corrigidas (propriedades no `pom.xml`). Varredura da imagem com Trivy: de 40 vulnerabilidades HIGH/CRITICAL
+  para 2 (as CVEs do Spring descritas acima, não exploráveis neste projeto).
+- **Supply chain e CI:** Dependabot (Maven, Docker, Compose e GitHub Actions) com *cooldown* de 7 dias; workflow de CI com
+  `permissions: contents: read` e actions fixadas por SHA; hook opcional de detecção de segredos (`.pre-commit-config.yaml`).
+- **Ferramentas executadas na auditoria:** Gitleaks (histórico completo, sem achados), Hadolint (sem avisos),
+  Trivy (configuração e imagem) e Semgrep (regras Java, secrets, Dockerfile e OWASP).
 
 ## Para quem for publicar ou implantar
 

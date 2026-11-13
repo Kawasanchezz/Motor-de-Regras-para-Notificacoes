@@ -41,6 +41,10 @@ notify:
   http:
     # Limite de tamanho do corpo das requisições (bytes)
     max-body-bytes: 262144
+  security:
+    # Chave de API (cabeçalho X-API-Key), mínimo 16 caracteres. Vazia = autenticação desligada
+    # (somente desenvolvimento local); no perfil prod a aplicação não inicia sem ela.
+    api-key: ${NOTIFY_API_KEY:}
   engine:
     # true: a primeira regra que resulta em SEND/DEFER encerra o processamento
     stop-on-first-match: true

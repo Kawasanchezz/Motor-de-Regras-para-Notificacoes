@@ -53,6 +53,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      NOTIFY_API_KEY: ${NOTIFY_API_KEY:?defina NOTIFY_API_KEY no .env (minimo 16 caracteres)}
       SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
     # Contêiner da aplicação restrito ao mínimo: sistema de arquivos somente leitura
     # (só /tmp é gravável, em memória), sem nenhuma capability do Linux, sem

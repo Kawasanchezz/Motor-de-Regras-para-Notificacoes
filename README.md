@@ -18,7 +18,7 @@ Antes da primeira execução, crie o seu `.env` a partir do modelo e troque as s
 cp .env.example .env      # PowerShell: Copy-Item .env.example .env
 ```
 
-> **Segurança:** a API não tem autenticação e as portas são publicadas só em `127.0.0.1`.
+> **Segurança:** a API exige a chave `NOTIFY_API_KEY` (cabeçalho `X-API-Key`) e as portas são publicadas só em `127.0.0.1`.
 > Leia [SECURITY.md](SECURITY.md) antes de expor o serviço. Depois de subir:
 
 | O quê | URL |
@@ -142,25 +142,38 @@ Regras inválidas (operador desconhecido, parâmetros ausentes, fuso inválido) 
 
 ```bash
 # Enviar evento (dispara a regra de exemplo de e-mail)
-curl -s -X POST localhost:8080/events -H 'Content-Type: application/json' -d '{
+curl -s -H "X-API-Key: $NOTIFY_API_KEY" -X POST localhost:8080/events -H 'Content-Type: application/json' -d '{
   "eventId": "evt-1001", "eventType": "PEDIDO_CRIADO", "userId": "user-42",
   "payload": {"order": {"id": "A-1001", "total": 650}},
   "userAttributes": {"name": "Ana", "email": "ana@example.com"}
 }'
 
 # Opt-out de e-mail
-curl -s -X PUT localhost:8080/users/user-42/preferences -H 'Content-Type: application/json' \
+curl -s -H "X-API-Key: $NOTIFY_API_KEY" -X PUT localhost:8080/users/user-42/preferences -H 'Content-Type: application/json' \
   -d '{"preferences":[{"channel":"EMAIL","optedOut":true}]}'
 
 # Histórico filtrado
-curl -s 'localhost:8080/decisions?userId=user-42&decision=BLOCK&page=0&size=10'
+curl -s -H "X-API-Key: $NOTIFY_API_KEY" 'localhost:8080/decisions?userId=user-42&decision=BLOCK&page=0&size=10'
 
 # Desativar regra
-curl -s -X PATCH localhost:8080/rules/11111111-1111-1111-1111-111111111111/status \
+curl -s -H "X-API-Key: $NOTIFY_API_KEY" -X PATCH localhost:8080/rules/11111111-1111-1111-1111-111111111111/status \
   -H 'Content-Type: application/json' -d '{"active":false}'
 ```
 
 Mais exemplos em [requests.http](requests.http).
+
+## Autenticação
+
+Toda requisição precisa do cabeçalho `X-API-Key` com o valor de `NOTIFY_API_KEY` (defina-o no `.env`: mínimo 16 caracteres,
+gere um valor longo e aleatório). Sem a chave a resposta é `401`. Ficam públicos apenas `/actuator/health` e a documentação
+estática do Swagger; no Swagger UI use o botão **Authorize** para informar a chave. No perfil `local` a chave é opcional.
+
+```bash
+export NOTIFY_API_KEY=<valor-do-.env>      # PowerShell: $env:NOTIFY_API_KEY = "<valor-do-.env>"
+curl -s -H "X-API-Key: $NOTIFY_API_KEY" localhost:8080/rules
+```
+
+Limitações (chave compartilhada, sem papéis nem limite de tentativas): veja o [SECURITY.md](SECURITY.md).
 
 ## Endpoints
 

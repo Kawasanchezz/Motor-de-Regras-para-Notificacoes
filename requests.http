@@ -1,11 +1,14 @@
 ### Coleção de exemplos (extensão "REST Client" do VS Code ou HTTP Client do IntelliJ)
 @host = http://localhost:8080
+@apikey = cole-aqui-o-valor-de-NOTIFY_API_KEY
 
 ### Lista as regras de exemplo
 GET {{host}}/rules?eventType=PEDIDO_CRIADO
+X-API-Key: {{apikey}}
 
 ### Cria uma regra: pedidos acima de R$ 500 de clientes do Brasil, com cooldown de 10 min
 POST {{host}}/rules
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 {
@@ -32,6 +35,7 @@ Content-Type: application/json
 
 ### Envia um evento (regra de exemplo: e-mail de confirmação)
 POST {{host}}/events
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 {
@@ -44,6 +48,7 @@ Content-Type: application/json
 
 ### Reenvia o mesmo evento (idempotência: replayed = true)
 POST {{host}}/events
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 {
@@ -56,6 +61,7 @@ Content-Type: application/json
 
 ### Pagamento falhou (SMS + push, cooldown de 5 min)
 POST {{host}}/events
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 {
@@ -68,24 +74,30 @@ Content-Type: application/json
 
 ### Opt-out de e-mail para todos os eventos
 PUT {{host}}/users/user-42/preferences
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 { "preferences": [ { "channel": "EMAIL", "optedOut": true } ] }
 
 ### Lista preferências
 GET {{host}}/users/user-42/preferences
+X-API-Key: {{apikey}}
 
 ### Histórico de decisões com filtros
 GET {{host}}/decisions?userId=user-42&decision=SEND&page=0&size=10
+X-API-Key: {{apikey}}
 
 ### Desativa uma regra (troque o id)
 PATCH {{host}}/rules/11111111-1111-1111-1111-111111111111/status
+X-API-Key: {{apikey}}
 Content-Type: application/json
 
 { "active": false }
 
 ### Saúde e métricas
 GET {{host}}/actuator/health
+X-API-Key: {{apikey}}
 
 ###
 GET {{host}}/actuator/metrics/notify.decisions
+X-API-Key: {{apikey}}

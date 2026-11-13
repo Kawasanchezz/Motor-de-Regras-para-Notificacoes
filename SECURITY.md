@@ -19,11 +19,13 @@ avaliação e plano de correção em até 30 dias, e crédito ao relator se dese
 
 ## Limitações conhecidas (não resolvidas)
 
-1. **Sem autenticação nem autorização.** Qualquer cliente que alcance a API pode criar/alterar/excluir regras,
-   enviar eventos e consultar o histórico (CWE-306 / OWASP A01 e A07). Por isso o `docker-compose.yml` publica as
-   portas apenas em `127.0.0.1`. Para uso real, coloque a API atrás de um gateway/proxy com autenticação
-   (OAuth2/JWT ou API key) ou adicione Spring Security.
-2. **Sem limite de taxa na própria API** (CWE-770). Há limite de tamanho do corpo (256 KB por `Content-Length`),
+1. **Autenticação simples, sem usuários nem papéis.** A API exige uma **chave de API compartilhada** (cabeçalho
+   `X-API-Key`, variável `NOTIFY_API_KEY`, mínimo 16 caracteres), obrigatória no Docker Compose e no perfil `prod`.
+   Quem tem a chave pode tudo: não há autorização por usuário, por papel nem por objeto (CWE-285), e a chave
+   não expira nem é rotacionada automaticamente. Sem a chave, só a verificação de saúde e a documentação estática
+   (Swagger) respondem. No perfil `local` a chave é opcional (autenticação desligada, com aviso no log). Para uso real
+   com vários clientes, use OAuth2/JWT (Spring Security) atrás de HTTPS.
+2. **Sem limite de taxa na própria API, nem contra tentativas de adivinhar a chave** (CWE-770 / CWE-307). Há limite de tamanho do corpo (256 KB por `Content-Length`),
    de paginação (100) e dos campos, mas nada impede um cliente de enviar milhares de requisições. Use um proxy com rate limit.
    Corpos `chunked` sem `Content-Length` não são cobertos pelo filtro de tamanho; limite também no proxy.
 3. **Idempotência sem escopo por cliente:** a chave é global (`Idempotency-Key` ou `eventId`). Sem autenticação,

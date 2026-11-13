@@ -14,6 +14,8 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.validation.FieldError;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
@@ -28,6 +30,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException e, HttpServletRequest request) {
         List<String> details = e.getBindingResult().getFieldErrors().stream()
                 .map(f -> f.getField() + ": " + f.getDefaultMessage())
+                .toList();
+        return build(HttpStatus.BAD_REQUEST, "Requisição inválida", request, details);
+    }
+
+    /** Validação de parâmetros do método (header, path, query) e do corpo quando o método tem restrições. */
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiError> handleMethodValidation(HandlerMethodValidationException e,
+                                                           HttpServletRequest request) {
+        List<String> details = e.getParameterValidationResults().stream()
+                .flatMap(result -> result.getResolvableErrors().stream().map(error -> {
+                    String name = error instanceof FieldError field
+                            ? field.getField()
+                            : result.getMethodParameter().getParameterName();
+                    return name + ": " + error.getDefaultMessage();
+                }))
                 .toList();
         return build(HttpStatus.BAD_REQUEST, "Requisição inválida", request, details);
     }

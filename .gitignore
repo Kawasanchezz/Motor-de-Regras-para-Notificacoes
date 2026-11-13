@@ -250,3 +250,6 @@ Gravação*
 *.mov
 *.mkv
 *.webm
+
+# --- Auditoria (arquivos de trabalho locais) ---
+.audit/

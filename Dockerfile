@@ -33,6 +33,6 @@ EXPOSE 8080
 
 # Só consulta o endpoint de saúde local (wget do busybox; não há curl na imagem).
 HEALTHCHECK --interval=10s --timeout=5s --start-period=40s --retries=12 \
-    CMD wget -q -O /dev/null http://127.0.0.1:8080/actuator/health || exit 1
+    CMD ["wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/actuator/health"]
 
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XX:+ExitOnOutOfMemoryError", "-jar", "app.jar"]

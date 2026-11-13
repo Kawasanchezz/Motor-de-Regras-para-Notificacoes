@@ -294,6 +294,21 @@ class EventFlowIntegrationTest {
     }
 
     @Test
+    void oversizedIdempotencyKeyIsRejectedBeforeAnyNotificationIsSent() throws Exception {
+        String eventType = unique("IT_IDEMKEY");
+        String userId = unique("user");
+        createRule(eventType, "[]");
+
+        mvc.perform(post("/events").header("Idempotency-Key", "k".repeat(200))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(eventJson(unique("evt"), eventType, userId, 50)))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(get("/decisions").param("userId", userId))
+                .andExpect(jsonPath("$.page.totalElements").value(0));
+    }
+
+    @Test
     void pageSizeIsCapped() throws Exception {
         mvc.perform(get("/rules").param("size", "100000"))
                 .andExpect(status().isOk())

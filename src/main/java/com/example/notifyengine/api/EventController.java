@@ -6,6 +6,7 @@ import com.example.notifyengine.application.EventProcessingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,7 +26,8 @@ public class EventController {
     @Operation(summary = "Avalia um evento e decide enviar, adiar ou bloquear",
             description = "Idempotente: usa o header Idempotency-Key, ou o eventId quando o header não é enviado.")
     public EventResponse ingest(@Valid @RequestBody EventRequest request,
-                                @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
+                                @RequestHeader(value = "Idempotency-Key", required = false)
+                                @Size(max = 150) String idempotencyKey) {
         return service.process(request, idempotencyKey);
     }
 }

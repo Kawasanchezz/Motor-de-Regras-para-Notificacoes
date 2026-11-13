@@ -157,3 +157,29 @@ temp/
 *.tgz
 *.7z
 *.rar
+
+
+# ======================================================================
+# ACRESCENTADO (auditoria): padroes recursivos
+# O .dockerignore casa a partir da raiz do contexto: ".env" so pega o da raiz.
+# Os padroes "**/" abaixo cobrem qualquer subpasta.
+# ======================================================================
+**/.env
+**/.env.*
+!**/.env.example
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.jks
+**/*.keystore
+**/*.log
+**/.claude
+**/.claude.json
+**/CLAUDE.md
+**/CLAUDE.local.md
+**/.mcp.json
+**/.cursor
+**/.git
+**/.audit
+**/.vscode

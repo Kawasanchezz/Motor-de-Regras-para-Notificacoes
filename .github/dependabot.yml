@@ -1,18 +1,32 @@
 version: 2
 updates:
+  # cooldown: espera 7 dias antes de propor versões recém-publicadas (reduz risco de pacote malicioso ou instável)
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
 
   # Atualiza tag + digest das imagens do Dockerfile e do docker-compose.yml
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "docker-compose"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7

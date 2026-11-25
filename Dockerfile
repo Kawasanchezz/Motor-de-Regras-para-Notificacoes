@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B -q -DskipTests package
 
 # ---- Runtime ----
 # JRE em Alpine: sem compilador, sem apt/curl e com muito menos pacotes que a imagem Ubuntu.
-FROM eclipse-temurin:21-jre-alpine@sha256:ac05c3c42b7c2f1a52c9bd52f01041fa1958231b15ebeae7420429cbc5baf474
+FROM eclipse-temurin:24-jre-alpine@sha256:4044b6c87cb088885bcd0220f7dc7a8a4aab76577605fa471945d2e98270741f
 
 LABEL org.opencontainers.image.title="notify-engine" \
       org.opencontainers.image.description="Motor de regras para notificações" \
